@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="randHand">
+        <item>@drawable/scissors</item>
+        <item>@drawable/rock</item>
+        <item>@drawable/paper</item>
+    </array>
+
+</resources>
