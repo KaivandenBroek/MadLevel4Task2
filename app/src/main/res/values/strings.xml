@@ -14,6 +14,10 @@
     <string name="computer">Computer</string>
     <string name="you">You</string>
     <string name="vs">V.S.</string>
+    <string name="rock">rock</string>
+    <string name="paper">paper</string>
+    <string name="stats">Your all time statistics</string>
+    <string name="scissors">scissors</string>
     <string name="instructions">Instructions: select rock, paper or scissors to play.</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>
