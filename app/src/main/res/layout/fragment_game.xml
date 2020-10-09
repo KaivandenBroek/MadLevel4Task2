@@ -112,8 +112,6 @@
         android:id="@+id/tv_vs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="217dp"
-        android:layout_marginBottom="238dp"
         android:text="@string/vs"
         android:textSize="36sp"
         android:textStyle="bold"
@@ -124,32 +122,32 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_statistics" />
 
     <ImageView
-        android:id="@+id/iv_you"
-        android:layout_width="49dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="262dp"
-        android:contentDescription="@string/you"
-        android:src="@android:drawable/checkbox_off_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tv_vs"
-        app:layout_constraintTop_toBottomOf="@+id/view"
-        app:srcCompat="@drawable/ic_launcher_foreground" />
-
-    <ImageView
         android:id="@+id/iv_computer"
-        android:layout_width="49dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="262dp"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="@string/computer"
-        android:src="@android:drawable/checkbox_off_background"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="261dp"
+        android:background="#673AB7"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_launcher_foreground"
         app:layout_constraintBottom_toTopOf="@+id/textView5"
         app:layout_constraintEnd_toStartOf="@+id/tv_vs"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view"
-        app:srcCompat="@drawable/ic_launcher_foreground" />
+        app:layout_constraintTop_toBottomOf="@+id/view" />
+
+    <ImageView
+        android:id="@+id/iv_you"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="261dp"
+        android:background="#673AB7"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_launcher_foreground"
+        app:layout_constraintBottom_toTopOf="@+id/textView6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_vs"
+        app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <TextView
         android:id="@+id/textView5"
@@ -157,7 +155,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="56dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="183dp"
         android:text="@string/computer"
+        app:layout_constraintBottom_toTopOf="@+id/ib_rock"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_computer" />
 
@@ -167,9 +167,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
+        android:layout_marginBottom="183dp"
         android:text="@string/you"
+        app:layout_constraintBottom_toTopOf="@+id/ib_scissors"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.822"
+        app:layout_constraintHorizontal_bias="0.826"
         app:layout_constraintStart_toEndOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/iv_you" />
 

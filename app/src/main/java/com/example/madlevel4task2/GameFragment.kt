@@ -17,6 +17,9 @@ class GameFragment : Fragment() {
     private val rock: String = "ROCK"
     private val paper: String = "PAPER"
     private val scissors: String = "SCISSORS"
+    private var win: Int = 0
+    private var lose: Int = 0
+    private var draw: Int = 0
 
 
     override fun onCreateView(
@@ -30,6 +33,8 @@ class GameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
+
+        // every button calls the same function, but with a different input
         ib_rock.setOnClickListener {
             gameStart(rock)
         }
@@ -59,7 +64,7 @@ class GameFragment : Fragment() {
     /**
      * Whenever a rock, paper or scissors button is clicked, a new game will start
      * the clicked button with a value will be compared with the random value and
-     * thus will a winner be chosen
+     * thus will a winner be chosen, also the outcome is stored
      */
     private fun gameStart(handUser: String) {
         var handPC: String = ""
@@ -71,7 +76,7 @@ class GameFragment : Fragment() {
             scissors -> iv_you.setImageResource(R.drawable.scissors)
         }
 
-        // i wanted to get this in a separate funtion,
+        // i wanted to get this in a separate function,
         // but i didn't know what to put as default return value
         when (Random.nextInt(1, 4)) {
             1 -> {
@@ -88,13 +93,30 @@ class GameFragment : Fragment() {
             }
         }
 
+        //draw
         if (handPC == handUser) {
-            //return 0
+            tv_winner.text = String.format("DRAW")
+            draw++
         }
 
-        tv_winner.text = String.format("WINNER")
+        //win
+        if (handPC == rock && handUser == paper || handPC == paper && handUser == scissors ||
+            handPC == scissors && handUser == rock
+        ) {
+            tv_winner.text = String.format("You Win")
+            win++
+        }
 
-        tv_score.text = String.format("Win: Draw: Lose:")
+        //lose
+        if (handPC == rock && handUser == scissors || handPC == paper && handUser == rock ||
+            handPC == scissors && handUser == paper
+        ) {
+            tv_winner.text = String.format("You Lose")
+            lose++
+        }
+
+        // update score
+        tv_score.text = String.format("Win: %d Draw: %d Lose: %d", win, draw, lose)
 
     }
 }
