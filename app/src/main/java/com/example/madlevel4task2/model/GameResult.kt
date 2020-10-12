@@ -1,16 +1,17 @@
-package com.example.madlevel4task2
+package com.example.madlevel4task2.model
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.madlevel4task2.enums.Move
 import com.example.madlevel4task2.enums.Outcome
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Parcelize
 @Entity(tableName = "resultTable")
-data class GameResult (
+data class GameResult(
 
     @ColumnInfo(name = "outcome")
     var outcome: Outcome?,
@@ -19,10 +20,10 @@ data class GameResult (
     var date: Date,
 
     @ColumnInfo(name = "handPC")
-    var handPC: String,
+    var handPC: Move,
 
     @ColumnInfo(name = "handUser")
-    var handUser: String,
+    var handUser: Move,
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")

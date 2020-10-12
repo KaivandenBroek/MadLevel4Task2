@@ -1,4 +1,4 @@
-package com.example.madlevel4task2
+package com.example.madlevel4task2.database
 
 import android.content.Context
 import androidx.room.Database
@@ -6,10 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.madlevel4task2.converters.DateConverter
+import com.example.madlevel4task2.converters.MoveConverter
 import com.example.madlevel4task2.converters.OutcomeConverter
+import com.example.madlevel4task2.model.GameResult
 
 @Database(entities = [GameResult::class], version = 1, exportSchema = false)
-@TypeConverters(DateConverter::class, OutcomeConverter::class)
+@TypeConverters(DateConverter::class, OutcomeConverter::class, MoveConverter::class)
 abstract class ResultRoomDatabase : RoomDatabase() {
 
     abstract fun resultDao(): ResultDao

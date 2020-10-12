@@ -1,29 +1,23 @@
-package com.example.madlevel4task2
+package com.example.madlevel4task2.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
+import com.example.madlevel4task2.model.GameResult
+import com.example.madlevel4task2.R
+import com.example.madlevel4task2.database.ResultRepository
+import com.example.madlevel4task2.enums.Move
 import com.example.madlevel4task2.enums.Outcome
 import kotlinx.android.synthetic.main.fragment_game.*
 import kotlinx.coroutines.*
 import java.util.*
-import kotlin.random.Random
-
-const val REQ_RESULT_KEY = "req_result"
-const val BUNDLE_RESULT_KEY = "bundle_result"
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
 class GameFragment : Fragment() {
-
-    private val rock: String = "ROCK"
-    private val paper: String = "PAPER"
-    private val scissors: String = "SCISSORS"
-
     private val mainScope = CoroutineScope(Dispatchers.Main)
     private lateinit var resultRepository: ResultRepository
 
@@ -41,17 +35,14 @@ class GameFragment : Fragment() {
         resultRepository = ResultRepository(requireContext())
         setHasOptionsMenu(true)
 
+        initViews()
+    }
+
+    private fun initViews() {
         stats()
-        // every button calls the same function, but with a different input
-        ib_rock.setOnClickListener {
-            gameStart(rock)
-        }
-        ib_paper.setOnClickListener {
-            gameStart(paper)
-        }
-        ib_scissors.setOnClickListener {
-            gameStart(scissors)
-        }
+        ib_rock.setOnClickListener { gameStart(Move.ROCK) }
+        ib_paper.setOnClickListener { gameStart(Move.PAPER) }
+        ib_scissors.setOnClickListener { gameStart(Move.SCISSORS) }
     }
 
     /**
@@ -59,43 +50,36 @@ class GameFragment : Fragment() {
      * the clicked button with a value will be compared with the random value and
      * thus will a winner be chosen, also the outcome is stored
      */
-    private fun gameStart(handUser: String) {
-        var handPC: String = ""
-        var outcome: Outcome?
+    private fun gameStart(handUser: Move) {
+        val outcome: Outcome?
 
-        //change your hand to button of hand picked
-        when (handUser) {
-            rock -> iv_you.setImageResource(R.drawable.rock)
-            paper -> iv_you.setImageResource(R.drawable.paper)
-            scissors -> iv_you.setImageResource(R.drawable.scissors)
-        }
+        val handPC = (0..2).random().toEnum<Move>()
 
-        // i wanted to get this in a separate function,
-        // but i didn't know what to put as default return value
-        when (Random.nextInt(1, 4)) {
-            1 -> {
-                handPC = rock
-                iv_computer.setImageResource(R.drawable.rock)
-            }
-            2 -> {
-                handPC = paper
-                iv_computer.setImageResource(R.drawable.paper)
-            }
-            3 -> {
-                handPC = scissors
-                iv_computer.setImageResource(R.drawable.scissors)
-            }
-        }
+        showGame(handUser, handPC)
 
-        outcome = matchCheck(handPC, handUser)
-        // update score
+        outcome = matchCheck(handUser, handPC)
+
         addMatch(handUser, handPC, outcome)
+
         stats()
     }
 
-    private fun addMatch(handUser: String, handPC: String, outcome: Outcome) {
+    private fun showGame(handUser: Move, handPC: Move) {
+        when (handUser) {
+            Move.ROCK -> iv_you.setImageResource(R.drawable.rock)
+            Move.PAPER -> iv_you.setImageResource(R.drawable.paper)
+            Move.SCISSORS -> iv_you.setImageResource(R.drawable.scissors)
+        }
+        when (handPC) {
+            Move.ROCK -> iv_computer.setImageResource(R.drawable.rock)
+            Move.PAPER -> iv_computer.setImageResource(R.drawable.paper)
+            Move.SCISSORS -> iv_computer.setImageResource(R.drawable.scissors)
+        }
+    }
+
+    private fun addMatch(handUser: Move, handPC: Move, outcome: Outcome) {
         mainScope.launch {
-            val result = GameResult (
+            val result = GameResult(
                 date = Calendar.getInstance().time,
                 handUser = handUser,
                 handPC = handPC,
@@ -104,24 +88,23 @@ class GameFragment : Fragment() {
 
             withContext(Dispatchers.IO) {
                 resultRepository.insertResult(result)
+                Log.i("database", "added game to database: $result")
             }
-            resultRepository.getAllResults()
-            setFragmentResult(REQ_RESULT_KEY,
-            bundleOf(Pair(BUNDLE_RESULT_KEY, result)))
         }
-
     }
 
-    private fun matchCheck(handPC: String, handUser: String): Outcome {
+    private fun matchCheck(handUser: Move, handPC: Move): Outcome {
         if (handPC == handUser) return Outcome.DRAW
 
-        return if (handPC == rock && handUser == paper || handPC == paper && handUser == scissors ||
-            handPC == scissors && handUser == rock) {
-            Outcome.WIN
-        } else {
+        return if (handUser == Move.SCISSORS && handPC == Move.ROCK) {
             Outcome.LOSE
+        } else if (handUser == Move.ROCK && handPC == Move.PAPER) {
+            Outcome.LOSE
+        } else if (handUser == Move.PAPER && handPC == Move.SCISSORS) {
+            Outcome.LOSE
+        } else {
+            Outcome.WIN
         }
-
     }
 
     private fun stats() {
@@ -153,5 +136,7 @@ class GameFragment : Fragment() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    private inline fun <reified Move : Enum<Move>> Int.toEnum(): Move = enumValues<Move>()[this]
 
 }

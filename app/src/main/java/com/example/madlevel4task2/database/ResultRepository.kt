@@ -1,6 +1,7 @@
-package com.example.madlevel4task2
+package com.example.madlevel4task2.database
 
 import android.content.Context
+import com.example.madlevel4task2.model.GameResult
 
 class ResultRepository(context: Context) {
 
@@ -15,16 +16,11 @@ class ResultRepository(context: Context) {
 
     suspend fun getWins(): Int? = resultDao?.getWins()
 
-    suspend fun getLoses(): Int? = resultDao?.getWins()
+    suspend fun getLoses(): Int? = resultDao?.getLoses()
 
-    suspend fun getDraws(): Int? = resultDao?.getWins()
+    suspend fun getDraws(): Int? = resultDao?.getDraws()
 
+    suspend fun insertResult(gameResult: GameResult) = resultDao?.insertResult(gameResult)
 
-    suspend fun insertResult(gameResult: GameResult) {
-        resultDao?.insertResult(gameResult)
-    }
-
-    suspend fun deleteAllResults() {
-        resultDao?.deleteAllResults()
-    }
+    suspend fun deleteAllResults() = resultDao?.deleteAllResults()
 }
