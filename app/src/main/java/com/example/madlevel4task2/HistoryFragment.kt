@@ -3,7 +3,6 @@ package com.example.madlevel4task2
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,9 +15,9 @@ import kotlinx.coroutines.*
  */
 class HistoryFragment : Fragment() {
 
-    private var results: ArrayList<GameResult> = arrayListOf()
+    private var results = arrayListOf<GameResult>()
     private lateinit var resultRepository: ResultRepository
-    private val resultAdapter = ResultAdapter(results)
+    private val resultAdapter = HistoryResultAdapter(results)
     private val mainScope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreateView(
@@ -34,19 +33,19 @@ class HistoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
-        initRv()
-        observeAddGameResult()
         resultRepository = ResultRepository(requireContext())
-        getHistoryFromDatabase()
+
+        initRv()
     }
 
     private fun  initRv() {
-        rv_history.adapter = resultAdapter
         rv_history.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        rv_history.adapter = resultAdapter
         rv_history.addItemDecoration(DividerItemDecoration(activity,
                 DividerItemDecoration.VERTICAL
             )
         )
+        observeAddGameResult()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -68,39 +67,42 @@ class HistoryFragment : Fragment() {
         }
     }
 
-    private fun getHistoryFromDatabase() {
-        mainScope.launch {
-            val newResults = withContext(Dispatchers.IO) {
-                resultRepository.getAllResults()
-            }
-            this@HistoryFragment.results.clear()
-            this@HistoryFragment.results.addAll(newResults)
-            this@HistoryFragment.resultAdapter.notifyDataSetChanged()
-        }
-
-    }
+//            if(results.isEmpty()){
+//                results.addAll(newResults)
+//                resultAdapter.notifyDataSetChanged()
+//            }else{
+//                results.clear()
+//                results.addAll(newResults)
+//                resultAdapter.notifyDataSetChanged()
+//            }
 
     private fun deleteHistory() {
         mainScope.launch {
             withContext(Dispatchers.IO) {
                 resultRepository.deleteAllResults()
             }
-            getHistoryFromDatabase()
+            observeAddGameResult()
         }
     }
 
     private fun observeAddGameResult() {
-        setFragmentResultListener(REQ_RESULT_KEY) { key, bundle ->
-            bundle.getParcelable<GameResult>(BUNDLE_RESULT_KEY)?.let {
-                val result = GameResult(
-                    date = it.date,
-                    handUser = it.handUser,
-                    handPC = it.handPC,
-                    outcome = it.outcome)
-                    print(result)
-                results.add(result)
-                resultAdapter.notifyDataSetChanged()
+        var list = emptyList<GameResult>()
+
+        mainScope.launch {
+            withContext(Dispatchers.IO) {
+                list = resultRepository.getAllResults()
             }
+            results.clear()
+            results.addAll(list)
+            resultAdapter.notifyDataSetChanged()
         }
     }
+//etFragmentResultListener(REQ_RESULT_KEY) { key, bundle ->
+//    bundle.getParcelable<GameResult>(BUNDLE_RESULT_KEY)?.let {
+//        val result = GameResult(
+//            date = it.date,
+//            handUser = it.handUser,
+//            handPC = it.handPC,
+//            outcome = it.outcome)
+//        print(result)
 }

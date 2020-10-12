@@ -1,12 +1,12 @@
 package com.example.madlevel4task2
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
+import com.example.madlevel4task2.enums.Outcome
 import kotlinx.android.synthetic.main.fragment_game.*
 import kotlinx.coroutines.*
 import java.util.*
@@ -23,9 +23,6 @@ class GameFragment : Fragment() {
     private val rock: String = "ROCK"
     private val paper: String = "PAPER"
     private val scissors: String = "SCISSORS"
-    private var win: Int = 0
-    private var lose: Int = 0
-    private var draw: Int = 0
 
     private val mainScope = CoroutineScope(Dispatchers.Main)
     private lateinit var resultRepository: ResultRepository
@@ -44,6 +41,7 @@ class GameFragment : Fragment() {
         resultRepository = ResultRepository(requireContext())
         setHasOptionsMenu(true)
 
+        stats()
         // every button calls the same function, but with a different input
         ib_rock.setOnClickListener {
             gameStart(rock)
@@ -56,21 +54,6 @@ class GameFragment : Fragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_main, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_history -> {
-                findNavController().navigate(R.id.fragment_history)
-                return true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     /**
      * Whenever a rock, paper or scissors button is clicked, a new game will start
      * the clicked button with a value will be compared with the random value and
@@ -78,7 +61,7 @@ class GameFragment : Fragment() {
      */
     private fun gameStart(handUser: String) {
         var handPC: String = ""
-        var outcome: String = ""
+        var outcome: Outcome?
 
         //change your hand to button of hand picked
         when (handUser) {
@@ -104,44 +87,16 @@ class GameFragment : Fragment() {
             }
         }
 
-        //draw
-        if (handPC == handUser) {
-            tv_winner.text = String.format("Draw")
-            outcome = "Draw"
-            draw++
-            //TODO stats in database
-        }
-
-        //win
-        if (handPC == rock && handUser == paper || handPC == paper && handUser == scissors ||
-            handPC == scissors && handUser == rock
-        ) {
-            tv_winner.text = String.format("You win!")
-            outcome = "You win!"
-            win++
-        }
-
-        //lose
-        if (handPC == rock && handUser == scissors || handPC == paper && handUser == rock ||
-            handPC == scissors && handUser == paper
-        ) {
-            tv_winner.text = String.format("Computer wins!")
-            outcome = "Computer wins!"
-            lose++
-        }
-
+        outcome = matchCheck(handPC, handUser)
         // update score
-        tv_score.text = String.format("Win: %d Draw: %d Lose: %d", win, draw, lose)
         addMatch(handUser, handPC, outcome)
+        stats()
     }
 
-    private fun addMatch(handUser: String, handPC: String, outcome: String) {
-        val date = Calendar.getInstance()
-
-
+    private fun addMatch(handUser: String, handPC: String, outcome: Outcome) {
         mainScope.launch {
             val result = GameResult (
-                date = date.toString(),
+                date = Calendar.getInstance().time,
                 handUser = handUser,
                 handPC = handPC,
                 outcome = outcome
@@ -156,4 +111,47 @@ class GameFragment : Fragment() {
         }
 
     }
+
+    private fun matchCheck(handPC: String, handUser: String): Outcome {
+        if (handPC == handUser) return Outcome.DRAW
+
+        return if (handPC == rock && handUser == paper || handPC == paper && handUser == scissors ||
+            handPC == scissors && handUser == rock) {
+            Outcome.WIN
+        } else {
+            Outcome.LOSE
+        }
+
+    }
+
+    private fun stats() {
+        mainScope.launch {
+            val wins = withContext(Dispatchers.IO) {
+                resultRepository.getWins()
+            }
+            val loses = withContext(Dispatchers.IO) {
+                resultRepository.getLoses()
+            }
+            val draws = withContext(Dispatchers.IO) {
+                resultRepository.getDraws()
+            }
+            tv_score.text = String.format("Win: %d Draw: %d Lose: %d", wins, draws, loses)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_main, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_history -> {
+                findNavController().navigate(R.id.fragment_history)
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
 }

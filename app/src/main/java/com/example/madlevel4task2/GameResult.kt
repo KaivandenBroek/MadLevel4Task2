@@ -4,17 +4,19 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.madlevel4task2.enums.Outcome
 import kotlinx.android.parcel.Parcelize
+import java.util.*
 
 @Parcelize
 @Entity(tableName = "resultTable")
 data class GameResult (
 
     @ColumnInfo(name = "outcome")
-    var outcome: String,
+    var outcome: Outcome?,
 
     @ColumnInfo(name = "date")
-    var date: String,
+    var date: Date,
 
     @ColumnInfo(name = "handPC")
     var handPC: String,
