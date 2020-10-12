@@ -11,15 +11,15 @@ public class ResultRepository(context: Context) {
         resultDao = resultRoomDatabase!!.resultDao()
     }
 
-    suspend fun getAllResults(): List<Result> {
+    suspend fun getAllResults(): List<GameResult> {
         return resultDao.getAllResults()
     }
 
-    suspend fun insertResult(result: Result) {
-        resultDao.insertResult(result)
+    suspend fun insertResult(gameResult: GameResult) {
+        resultDao.insertResult(gameResult)
     }
 
-    suspend fun deleteResult(result: Result) {
+    suspend fun deleteAllResults() {
         resultDao.deleteAllResults()
     }
 }

@@ -6,15 +6,15 @@ import androidx.room.*
 interface ResultDao {
 
     @Query("SELECT * FROM resultTable")
-    suspend fun getAllResults(): List<Result>
+    suspend fun getAllResults(): List<GameResult>
 
     @Insert
-    suspend fun insertResult(result: Result)
+    suspend fun insertResult(gameResult: GameResult)
 
     @Query("DELETE FROM resultTable")
     suspend fun deleteAllResults()
 
     @Update
-    suspend fun updateResult(result: Result)
+    suspend fun updateResult(gameResult: GameResult)
 
 }
