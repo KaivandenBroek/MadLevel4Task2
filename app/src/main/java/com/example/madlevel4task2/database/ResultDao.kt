@@ -1,6 +1,7 @@
-package com.example.madlevel4task2
+package com.example.madlevel4task2.database
 
 import androidx.room.*
+import com.example.madlevel4task2.model.GameResult
 
 @Dao
 interface ResultDao {
