@@ -19,4 +19,5 @@
     <string name="stats">Your all time statistics</string>
     <string name="scissors">scissors</string>
     <string name="instructions">Instructions: select rock, paper or scissors to play.</string>
+    <string name="stat_numbers">Win: %d Draw: %d Lose: %d</string>
 </resources>

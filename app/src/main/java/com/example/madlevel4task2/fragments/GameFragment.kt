@@ -77,6 +77,9 @@ class GameFragment : Fragment() {
         }
     }
 
+    /*
+    adds match data in match object to database
+     */
     private fun addMatch(handUser: Move, handPC: Move, outcome: Outcome) {
         mainScope.launch {
             val result = GameResult(
@@ -93,6 +96,9 @@ class GameFragment : Fragment() {
         }
     }
 
+    /*
+    Checks match outcomes and compares them
+     */
     private fun matchCheck(handUser: Move, handPC: Move): Outcome {
         if (handPC == handUser) return Outcome.DRAW
 
@@ -107,6 +113,9 @@ class GameFragment : Fragment() {
         }
     }
 
+    /*
+    Updates game statistics, and puts it in a string
+     */
     private fun stats() {
         mainScope.launch {
             val wins = withContext(Dispatchers.IO) {
@@ -118,7 +127,8 @@ class GameFragment : Fragment() {
             val draws = withContext(Dispatchers.IO) {
                 resultRepository.getDraws()
             }
-            tv_score.text = String.format("Win: %d Draw: %d Lose: %d", wins, draws, loses)
+            tv_score.text = getString(R.string.stat_numbers, wins, draws, loses)
+            //tv_score.text = String.format("Win: %d Draw: %d Lose: %d", wins, draws, loses)
         }
     }
 
@@ -137,6 +147,7 @@ class GameFragment : Fragment() {
         }
     }
 
+    // for the converter
     private inline fun <reified Move : Enum<Move>> Int.toEnum(): Move = enumValues<Move>()[this]
 
 }
