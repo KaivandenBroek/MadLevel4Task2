@@ -100,15 +100,21 @@ class GameFragment : Fragment() {
     Checks match outcomes and compares them
      */
     private fun matchCheck(handUser: Move, handPC: Move): Outcome {
-        if (handPC == handUser) return Outcome.DRAW
-
+        if (handPC == handUser) {
+            tv_winner.text = getString(R.string.draw)
+            return Outcome.DRAW
+        }
         return if (handUser == Move.SCISSORS && handPC == Move.ROCK) {
+            tv_winner.text = getString(R.string.lose)
             Outcome.LOSE
         } else if (handUser == Move.ROCK && handPC == Move.PAPER) {
+            tv_winner.text = getString(R.string.lose)
             Outcome.LOSE
         } else if (handUser == Move.PAPER && handPC == Move.SCISSORS) {
+            tv_winner.text = getString(R.string.lose)
             Outcome.LOSE
         } else {
+            tv_winner.text = getString(R.string.win )
             Outcome.WIN
         }
     }

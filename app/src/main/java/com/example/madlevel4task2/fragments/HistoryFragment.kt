@@ -70,6 +70,7 @@ class HistoryFragment : Fragment() {
             }
             results.clear()
             results.addAll(history)
+            results.sortByDescending { it.date } // most recent should be on top
             resultAdapter.notifyDataSetChanged()
         }
     }
